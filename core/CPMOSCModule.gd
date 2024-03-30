@@ -15,20 +15,26 @@ extends Node
 @export var module_id := "author.modulename"
 ## A namespace for this module's messages. Must start with /, but can otherwise be anything. (Even just / is OK.)
 @export var module_namespace := "/module"
+## This module's controls, if any. Added to the control list when loaded.
+var control : ModuleControlBase = null
 
 var _client : OSCClient = null
 var _initialized : bool = false
+
 
 func _init():
 	add_to_group("modules")
 	if !module_namespace.begins_with("/"):
 		printerr("Invalid module namespace: " + module_namespace + "\nNamespaces must begin with /.")
 
+
 func initialize(client : OSCClient, manager : CPMOSCManager):
 	_client = client
 	manager.message_received.connect(on_message_received)
 	_initialized = true
-
+	for child in get_children():
+		if child is ModuleControlBase:
+			control = child
 # Sends a message via OSC client. Will be sent as /module_namespace/address
 func send_message(address, arguments):
 	assert(_initialized,
@@ -46,3 +52,7 @@ func send_message(address, arguments):
 # Listener for Manager's "message_received" signal.
 func on_message_received(address, arguments):
 	pass
+
+# A check for whether or not this module has any controls.
+func has_controls() -> bool:
+	return control != null
