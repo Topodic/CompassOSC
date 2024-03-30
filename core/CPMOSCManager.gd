@@ -11,6 +11,8 @@ signal message_received(address, arguments)
 @onready var _incoming_messages : Dictionary = _server.incoming_messages 
 @onready var _modules : Array = get_tree().get_nodes_in_group("modules")
 
+@onready var _controls_list = get_node("PanelContainer/MarginContainer/TabContainer/Controls/ScrollContainer/ModuleControlList")
+
 var current_game_time = 0
 var current_tick_rate = 0
 
@@ -23,6 +25,9 @@ func _ready():
 	for module in _modules:
 		assert(module is CPMOSCModule, "Invalid node found in module list: " + str(module))
 		module.initialize(_client, self)
+		if module.has_controls():
+			module.control.reparent(_controls_list)
+			module.control.show()
 	
 
 func _process(delta):

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dq21ausqfl3wl"]
+[gd_scene load_steps=5 format=3 uid="uid://dq21ausqfl3wl"]
 
 [ext_resource type="Script" path="res://core/CPMOSCManager.gd" id="1_vax1h"]
 [ext_resource type="Script" path="res://addons/godOSC/scripts/OSCServer.gd" id="2_tt6q6"]
 [ext_resource type="Script" path="res://addons/godOSC/scripts/OSCClient.gd" id="3_okd4r"]
+[ext_resource type="PackedScene" uid="uid://blhkrso320b5s" path="res://modules/BasicPhysics/BasicPhysics.tscn" id="5_f84gd"]
 
 [node name="CPMOSCManager" type="Node"]
 script = ExtResource("1_vax1h")
@@ -14,3 +15,61 @@ port = 9001
 [node name="OSCClient" type="Node" parent="."]
 script = ExtResource("3_okd4r")
 port = 9000
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="TabContainer" type="TabContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Controls" type="MarginContainer" parent="PanelContainer/MarginContainer/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/TabContainer/Controls"]
+layout_mode = 2
+
+[node name="ModuleControlList" type="VBoxContainer" parent="PanelContainer/MarginContainer/TabContainer/Controls/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Loaded Modules" type="MarginContainer" parent="PanelContainer/MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Log" type="MarginContainer" parent="PanelContainer/MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Settings" type="MarginContainer" parent="PanelContainer/MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="BasicPhysics" parent="." instance=ExtResource("5_f84gd")]
