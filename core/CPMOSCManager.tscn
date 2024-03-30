@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://dq21ausqfl3wl"]
+
+[ext_resource type="Script" path="res://core/CPMOSCManager.gd" id="1_vax1h"]
+[ext_resource type="Script" path="res://addons/godOSC/scripts/OSCServer.gd" id="2_tt6q6"]
+[ext_resource type="Script" path="res://addons/godOSC/scripts/OSCClient.gd" id="3_okd4r"]
+
+[node name="CPMOSCManager" type="Node"]
+script = ExtResource("1_vax1h")
+
+[node name="OSCServer" type="Node" parent="."]
+script = ExtResource("2_tt6q6")
+port = 9001
+
+[node name="OSCClient" type="Node" parent="."]
+script = ExtResource("3_okd4r")
+port = 9000
