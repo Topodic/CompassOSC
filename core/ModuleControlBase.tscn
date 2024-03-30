@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://blv2puopdyhtd"]
+
+[ext_resource type="Script" path="res://core/ModuleControlBase.gd" id="1_u5356"]
+
+[node name="ModuleControlBase" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 32)
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.049
+offset_bottom = 0.247999
+grow_horizontal = 2
+size_flags_horizontal = 3
+script = ExtResource("1_u5356")
+control_nodepaths = null
+metadata/_edit_horizontal_guides_ = [-153.0]
+metadata/_edit_use_anchors_ = true
