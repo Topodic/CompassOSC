@@ -87,6 +87,10 @@ func _export_button_pressed():
 	OS.execute(binary, PackedStringArray(["--headless", "--export-pack", "Module", out]), _result)
 	print(_result)
 	
+	# Cleanup
+	_export_config.set_value("preset.0", "export_files", PackedStringArray())
+	_export_config.save("res://export_presets.cfg")
+	
 	_exporting = false
 	_godot_executable_button.disabled = false
 	_save_to_button.disabled = false
