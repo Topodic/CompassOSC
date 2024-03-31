@@ -16,39 +16,42 @@ port = 9001
 script = ExtResource("3_okd4r")
 port = 9000
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="Interface" type="PanelContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Interface"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="TabContainer" type="TabContainer" parent="PanelContainer/MarginContainer"]
+[node name="TabContainer" type="TabContainer" parent="Interface/MarginContainer"]
 layout_mode = 2
+current_tab = 2
 
-[node name="Controls" type="MarginContainer" parent="PanelContainer/MarginContainer/TabContainer"]
+[node name="Controls" type="MarginContainer" parent="Interface/MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/TabContainer/Controls"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Interface/MarginContainer/TabContainer/Controls"]
 layout_mode = 2
 
-[node name="ModuleControlList" type="VBoxContainer" parent="PanelContainer/MarginContainer/TabContainer/Controls/ScrollContainer"]
+[node name="ModuleControlList" type="VBoxContainer" parent="Interface/MarginContainer/TabContainer/Controls/ScrollContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Loaded Modules" type="MarginContainer" parent="PanelContainer/MarginContainer/TabContainer"]
+[node name="Loaded Modules" type="MarginContainer" parent="Interface/MarginContainer/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
@@ -56,20 +59,200 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Log" type="MarginContainer" parent="PanelContainer/MarginContainer/TabContainer"]
-visible = false
+[node name="ScrollContainer" type="ScrollContainer" parent="Interface/MarginContainer/TabContainer/Loaded Modules"]
+layout_mode = 2
+
+[node name="LoadedModulesList" type="VBoxContainer" parent="Interface/MarginContainer/TabContainer/Loaded Modules/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Settings" type="MarginContainer" parent="Interface/MarginContainer/TabContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="Settings" type="MarginContainer" parent="PanelContainer/MarginContainer/TabContainer"]
-visible = false
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Network:"
+
+[node name="PanelContainer" type="PanelContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "IP Address:"
+
+[node name="IPAddress" type="LineEdit" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+tooltip_text = "The IP address to receive and send from.
+You very likely don't need to change this.
+(Default: 127.0.0.1)"
+text = "127.0.0.1"
+placeholder_text = "127.0.0.1"
+alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Receiving Port:"
+
+[node name="ReceivingPort" type="SpinBox" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+tooltip_text = "The port to receive from.
+You very likely don't need to change this.
+(Default: 9001)"
+max_value = 65535.0
+value = 9001.0
+rounded = true
+alignment = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Sending Port:"
+
+[node name="SendingPort" type="SpinBox" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+tooltip_text = "The port to send to.
+You very likely don't need to change this.
+(Default: 9000)"
+max_value = 65535.0
+value = 9000.0
+rounded = true
+alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Logging"
+
+[node name="PanelContainer" type="PanelContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Info:"
+
+[node name="InfoToggle" type="CheckButton" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Debug:"
+
+[node name="DebugToggle" type="CheckButton" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Warning:"
+
+[node name="WarningToggle" type="CheckButton" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "Error:"
+
+[node name="ErrorToggle" type="CheckButton" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+text = "Incoming:"
+
+[node name="IncomingToggle" type="CheckButton" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer5"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer6"]
+layout_mode = 2
+text = "Outgoing:"
+
+[node name="OutgoingToggle" type="CheckButton" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer2/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer6"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
 
 [node name="BasicPhysics" parent="." instance=ExtResource("5_f84gd")]
+module_description = "Allows for basic control of animations via in-game movement, which should enable making much more natural movement for things such as tails, capes, and other such dangly wobbly bobbly bits."
+has_config = true
