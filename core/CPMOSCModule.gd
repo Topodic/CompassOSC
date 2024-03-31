@@ -15,6 +15,13 @@ extends Node
 @export var module_id := "author.modulename"
 ## A namespace for this module's messages. Must start with /, but can otherwise be anything. (Even just / is OK.)
 @export var module_namespace := "/module"
+## A link to your module's git repository, if available. (Optional)
+@export var module_git_repo := ""
+## Set this if your module has persistent data. This will generate a config file
+## in the user's data for Compass with a filename based on your module ID.
+@export var has_config := false
+var config : ConfigFile = null
+
 ## This module's controls, if any. Added to the control list when loaded.
 var control : ModuleControlBase = null
 
@@ -27,7 +34,6 @@ func _init():
 	if !module_namespace.begins_with("/"):
 		printerr("Invalid module namespace: " + module_namespace + "\nNamespaces must begin with /.")
 
-
 func initialize(client : OSCClient, manager : CPMOSCManager):
 	_client = client
 	manager.message_received.connect(on_message_received)
@@ -35,6 +41,14 @@ func initialize(client : OSCClient, manager : CPMOSCManager):
 	for child in get_children():
 		if child is ModuleControlBase:
 			control = child
+			control.initialize(self)
+	if has_config:
+		config = ConfigFile.new()
+		var err = config.load("user://" + module_id + ".cfg")
+		if err == OK:
+			return
+		config.save("user://" + module_id + ".cfg")
+
 # Sends a message via OSC client. Will be sent as /module_namespace/address
 func send_message(address, arguments):
 	assert(_initialized,
@@ -49,10 +63,16 @@ func send_message(address, arguments):
 		final_address = module_namespace + "/" + address
 	_client.send_message(final_address, arguments)
 
-# Listener for Manager's "message_received" signal.
+## Listener for Manager's "message_received" signal. Override this in your
+## own module to receive and respond to them - changing this won't work when
+## exported.
 func on_message_received(address, arguments):
 	pass
 
 # A check for whether or not this module has any controls.
 func has_controls() -> bool:
 	return control != null
+
+func save_configs():
+	if config:
+		config.save("user://" + module_id + ".cfg")
