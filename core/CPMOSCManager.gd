@@ -37,6 +37,8 @@ var _process_time = 0.0
 var _ticks = 0
 
 func _ready():
+	DisplayServer.window_set_min_size(Vector2i(500, 350))
+	
 	var err = _config.load("user://manager.cfg")
 	if !err == OK:
 		_config.set_value("Network", "IPAddress", "127.0.0.1")
