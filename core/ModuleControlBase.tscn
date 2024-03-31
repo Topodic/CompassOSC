@@ -12,5 +12,6 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 script = ExtResource("1_u5356")
 control_nodepaths = null
+control_collection_type = null
 metadata/_edit_horizontal_guides_ = [-153.0]
 metadata/_edit_use_anchors_ = true
