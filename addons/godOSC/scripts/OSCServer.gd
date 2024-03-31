@@ -24,6 +24,7 @@ func _ready():
 
 ## Sets the port for the server to listen on. Can only listen to one port at a time.
 func listen(new_port):
+	server.stop()
 	port = new_port
 	server.listen(port)
 
