@@ -174,14 +174,14 @@ func load_packed_modules():
 		if success:
 			var module = load("res://modules/" + module_name + "/" + module_name + ".tscn")
 			if module == null:
-				printerr("Error loading module: " + module_name)
+				Logging.write("Error loading module: " + module_name, Logging.MessageLevel.ERROR)
 			else:
 				module = module.instantiate()
 				var module_exists = false
 				for existing_module in _modules:
 					if existing_module.module_id == module.module_id:
 						if existing_module.module_version < module.module_version:
-							print(module.module_name + "(" + module.module_id + ")" + " is already present, but older than this version. Loading new version.")
+							Logging.write(module.module_name + "(" + module.module_id + ")" + " is already present, but older than this version. Loading new version.", Logging.MessageLevel.INFO)
 							_modules.erase(existing_module)
 							existing_module.remove_from_group("modules")
 							existing_module.queue_free()

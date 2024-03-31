@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://dq21ausqfl3wl"]
+[gd_scene load_steps=4 format=3 uid="uid://dq21ausqfl3wl"]
 
 [ext_resource type="Script" path="res://core/CPMOSCManager.gd" id="1_vax1h"]
 [ext_resource type="Script" path="res://addons/godOSC/scripts/OSCServer.gd" id="2_tt6q6"]
 [ext_resource type="Script" path="res://addons/godOSC/scripts/OSCClient.gd" id="3_okd4r"]
-[ext_resource type="PackedScene" uid="uid://blhkrso320b5s" path="res://modules/BasicPhysics/BasicPhysics.tscn" id="5_f84gd"]
 
 [node name="CPMOSCManager" type="Node"]
 script = ExtResource("1_vax1h")
@@ -252,7 +251,3 @@ text = "Outgoing:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
-
-[node name="BasicPhysics" parent="." instance=ExtResource("5_f84gd")]
-module_description = "Allows for basic control of animations via in-game movement, which should enable making much more natural movement for things such as tails, capes, and other such dangly wobbly bobbly bits."
-has_config = true
