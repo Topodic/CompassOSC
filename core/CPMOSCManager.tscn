@@ -31,10 +31,8 @@ theme_override_constants/margin_bottom = 20
 
 [node name="TabContainer" type="TabContainer" parent="Interface/MarginContainer"]
 layout_mode = 2
-current_tab = 2
 
 [node name="Controls" type="MarginContainer" parent="Interface/MarginContainer/TabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -67,6 +65,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Settings" type="MarginContainer" parent="Interface/MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
