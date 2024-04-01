@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://dxjs3cxekq3yr"]
+
+[ext_resource type="Script" path="res://samples/HeldItemDetector/HeldItemDetector.gd" id="1_k8i4d"]
+[ext_resource type="PackedScene" uid="uid://dmvy1cp30q3g8" path="res://samples/HeldItemDetector/IsHoldingIndicator.tscn" id="2_wcldq"]
+
+[node name="HeldItemDetector" type="Node"]
+script = ExtResource("1_k8i4d")
+module_name = "Held Item Detector"
+module_description = "A sample module that detects the item the player is holding and sends different messages depending on the item ID."
+module_author = "Topodic"
+module_id = "topodic.helditemdetector"
+module_namespace = "/sample"
+module_git_repo = "https://github.com/Topodic/CompassOSC"
+
+[node name="IsHoldingIndicator" parent="." instance=ExtResource("2_wcldq")]

@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmvy1cp30q3g8"]
+
+[ext_resource type="PackedScene" uid="uid://blv2puopdyhtd" path="res://core/ModuleControlBase.tscn" id="1_bpq15"]
+[ext_resource type="Script" path="res://samples/HeldItemDetector/IsHoldingIndicator.gd" id="2_6jvqv"]
+
+[node name="IsHoldingIndicator" instance=ExtResource("1_bpq15")]
+script = ExtResource("2_6jvqv")
+control_nodepaths = Array[NodePath]([])
+control_collection_type = "Dictionary"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." index="0"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer" index="0"]
+layout_mode = 2
+text = "Is the player holding a redstone block?"
+
+[node name="YesNoLabel" type="Label" parent="HBoxContainer" index="1"]
+layout_mode = 2
+text = "Don't think so."
