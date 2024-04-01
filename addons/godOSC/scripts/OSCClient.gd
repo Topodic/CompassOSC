@@ -45,6 +45,11 @@ func prepare_message(osc_address : String, args : Array):
 				packet.append(115)
 			TYPE_PACKED_BYTE_ARRAY:
 				packet.append(98)
+			TYPE_BOOL:
+				if arg:
+					packet.append(84)
+				else:
+					packet.append(70)
 	
 	packet.append(0)
 	while fmod(packet.size(), 4):
