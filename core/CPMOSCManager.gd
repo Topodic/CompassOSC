@@ -111,7 +111,6 @@ func _ready():
 	import_modules()
 	if import_pcks():
 		import_modules()
-	print(_module_filepaths)
 
 	for module in _loaded_modules:
 		assert(module is CPMOSCModule, "Invalid node found in module list: " + str(module))
@@ -162,7 +161,6 @@ func _on_message_sent(address, arguments):
 
 func import_pcks() -> bool:
 	var dir = DirAccess.open("res://modules")
-	print(dir.get_directories())
 	var err = DirAccess.get_open_error()
 	if err == ERR_INVALID_PARAMETER:
 		DirAccess.make_dir_absolute("res://modules")
@@ -177,7 +175,6 @@ func import_pcks() -> bool:
 
 func import_modules():
 	var dir = DirAccess.open("res://modules")
-	print(dir.get_files())
 	var err = DirAccess.get_open_error()
 	if err == ERR_INVALID_PARAMETER:
 		DirAccess.make_dir_absolute("res://modules")
@@ -199,7 +196,6 @@ func import_modules():
 					module_exists = true
 
 		if !module_exists:
-			print(module.module_name + " loaded!")
 			add_child(module)
 			_loaded_modules.append(module)
 		else:
@@ -237,9 +233,7 @@ func _recurse_for_pcks(paths : Array, dir : DirAccess):
 		
 func _recurse_for_modules(modules : Array[CPMOSCModule], dir : DirAccess):
 	var dirs = dir.get_directories()
-	print(dirs)
 	var files = dir.get_files()
-	print(files)
 	
 	for file in files:
 		var is_scene = file.ends_with(".tscn")
