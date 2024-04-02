@@ -9,7 +9,8 @@ signal message_received(address, arguments)
 @onready var _client : OSCClient = $OSCClient 
 
 @onready var _incoming_messages : Dictionary = _server.incoming_messages 
-@onready var _modules : Array = get_tree().get_nodes_in_group("modules")
+@onready var _loaded_modules : Array = get_tree().get_nodes_in_group("modules")
+var _module_filepaths : Array = []
 
 @onready var _controls_list = %ModuleControlList
 @onready var _loaded_modules_list = %LoadedModulesList
@@ -104,26 +105,20 @@ func _ready():
 	_error_toggle.toggled.connect(_logging_toggle_changed.bind(Logging.MessageLevel.ERROR))
 	_incoming_toggle.toggled.connect(_logging_toggle_changed.bind(Logging.MessageLevel.INCOMING))
 	_outgoing_toggle.toggled.connect(_logging_toggle_changed.bind(Logging.MessageLevel.OUTGOING))
+	
+	# Workaround for a quirk with DirAccess and loading resource packs
+	# in Godot itself, see https://github.com/godotengine/godot/issues/87274
+	import_modules()
+	if import_pcks():
+		import_modules()
+	print(_module_filepaths)
 
-	load_packed_modules()
-	for module in _modules:
+	for module in _loaded_modules:
 		assert(module is CPMOSCModule, "Invalid node found in module list: " + str(module))
 		module.initialize(_client, self)
 		
-		if module.has_controls():
-			var _container = _control_container.instantiate()
-			_controls_list.add_child(_container)
-			_container.attach_control(module.control)
-			module.control.show()
-		
-		var entry = _loaded_module_entry.instantiate()
-		_loaded_modules_list.add_child(entry)
-		if module.module_git_repo != "":
-			entry.set_git_repo(module.module_git_repo)
-		entry.set_module_name(module.module_name)
-		entry.set_module_version(module.module_version)
-		entry.set_author_name(module.module_author)
-		entry.set_description(module.module_description)
+		attach_module_controls(module)
+		add_loaded_modules_entry(module)
 
 
 func _ip_address_changed(address : String):
@@ -165,44 +160,101 @@ func _on_message_received(address, arguments):
 func _on_message_sent(address, arguments):
 	Logging.write(address + ": " + str(arguments), Logging.MessageLevel.OUTGOING)
 
-func load_packed_modules():
+func import_pcks() -> bool:
 	var dir = DirAccess.open("res://modules")
+	print(dir.get_directories())
 	var err = DirAccess.get_open_error()
-
 	if err == ERR_INVALID_PARAMETER:
 		DirAccess.make_dir_absolute("res://modules")
-		return
+		return false
+	
+	var paths = []
+	_recurse_for_pcks(paths, dir)
+	for pck in paths:
+		ProjectSettings.load_resource_pack(pck, false)
 		
-	dir.list_dir_begin()
-	var file = dir.get_next()
-	var module_name = file.rstrip(".pck").split("_")[0].split("-")[0]
+	return true
 
-	while file:
-		var success = ProjectSettings.load_resource_pack("res://modules/" + file)
-		if success:
-			var module = load("res://modules/" + module_name + "/" + module_name + ".tscn")
-			if module == null:
-				Logging.write("Error loading module: " + module_name, Logging.MessageLevel.ERROR)
-			else:
-				module = module.instantiate()
-				var module_exists = false
-				for existing_module in _modules:
-					if existing_module.module_id == module.module_id:
-						if existing_module.module_version < module.module_version:
-							Logging.write(module.module_name + "(" + module.module_id + ")" + " is already present, but older than this version. Loading new version.", Logging.MessageLevel.INFO)
-							_modules.erase(existing_module)
-							existing_module.remove_from_group("modules")
-							existing_module.queue_free()
-						else:
-							print(module.module_name + "(" + module.module_id + ")" + " is already loaded.")
-							module_exists = true
-
-				if !module_exists and module != null:
-					print(module.module_name + " loaded!")
-					add_child(module)
-					_modules.append(module)
+func import_modules():
+	var dir = DirAccess.open("res://modules")
+	print(dir.get_files())
+	var err = DirAccess.get_open_error()
+	if err == ERR_INVALID_PARAMETER:
+		DirAccess.make_dir_absolute("res://modules")
+		return false
+	
+	var modules : Array[CPMOSCModule] = []
+	_recurse_for_modules(modules, dir)
+	for module in modules:
+		var module_exists = false
+		for existing_module in _loaded_modules:
+			if existing_module.module_id == module.module_id:
+				if existing_module.module_version < module.module_version:
+					Logging.write(module.module_name + "(" + module.module_id + ")" + " is already present, but older than this version. Loading new version.", Logging.MessageLevel.INFO)
+					_loaded_modules.erase(existing_module)
+					existing_module.remove_from_group("modules")
+					existing_module.queue_free()
 				else:
-					module.queue_free()
-			
-		file = dir.get_next()
-		module_name = file.rstrip(".pck")
+					Logging.write(module.module_name + "(" + module.module_id + ")" + " is already loaded.")
+					module_exists = true
+
+		if !module_exists:
+			print(module.module_name + " loaded!")
+			add_child(module)
+			_loaded_modules.append(module)
+		else:
+			module.queue_free()
+
+func attach_module_controls(module : CPMOSCModule):
+	if module.has_controls():
+		var _container = _control_container.instantiate()
+		_controls_list.add_child(_container)
+		_container.attach_control(module.control)
+		module.control.show()
+
+func add_loaded_modules_entry(module : CPMOSCModule):
+	var entry = _loaded_module_entry.instantiate()
+	_loaded_modules_list.add_child(entry)
+	if module.module_git_repo != "":
+		entry.set_git_repo(module.module_git_repo)
+	entry.set_module_name(module.module_name)
+	entry.set_module_version(module.module_version)
+	entry.set_author_name(module.module_author)
+	entry.set_description(module.module_description)
+
+func _recurse_for_pcks(paths : Array, dir : DirAccess):
+	var dirs = dir.get_directories()
+	var files = dir.get_files()
+	
+	for file in files:
+		if file.ends_with(".pck"):
+			paths.append(dir.get_current_dir() + "/" + file)
+
+	for subdir in dirs:
+		error_string(dir.change_dir(subdir))
+		_recurse_for_pcks(paths, dir)
+		error_string(dir.change_dir(".."))
+		
+func _recurse_for_modules(modules : Array[CPMOSCModule], dir : DirAccess):
+	var dirs = dir.get_directories()
+	print(dirs)
+	var files = dir.get_files()
+	print(files)
+	
+	for file in files:
+		var is_scene = file.ends_with(".tscn")
+		var is_remap = file.ends_with(".tscn.remap")
+		if !is_scene and !is_remap:
+			continue
+		var scene_path = dir.get_current_dir() + "/" + file.rstrip(".remap")
+		var node = load(scene_path).instantiate()
+		if node is CPMOSCModule:
+			_module_filepaths.append(scene_path)
+			modules.append(node)
+		else:
+			node.free()
+	for subdir in dirs:
+		dir.change_dir(subdir)
+		_recurse_for_modules(modules, dir)
+		dir.change_dir("..")
+
