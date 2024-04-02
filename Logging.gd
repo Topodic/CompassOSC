@@ -16,10 +16,18 @@ var logging_level : MessageLevel = 0
 func write(message : String, level : MessageLevel = MessageLevel.INFO):
 	if !should_log(level):
 		return
+		
+	var from : String = ""
+	if EngineDebugger.is_active():
+		# Fetches trace of caller for logging clarity.
+		from = get_stack()[1]["source"]
 
+		var split = from.split("/")
+		from = split[split.size()-1]
+		
 	var level_str = level_to_string(level)
 
-	var final_message = "[{level}]: {message}".format({"level": level_str, "message": message})
+	var final_message = "[{level}] {from}: {message}".format({"level": level_str, "from": from, "message": message})
 	if level == MessageLevel.WARNING or level == MessageLevel.ERROR:
 		printerr(final_message)
 	else:
