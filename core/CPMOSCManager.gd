@@ -162,7 +162,8 @@ func _on_message_sent(address, arguments):
 func import_pcks() -> bool:
 	var dir = DirAccess.open("res://modules")
 	var err = DirAccess.get_open_error()
-	if err == ERR_INVALID_PARAMETER:
+	if err != OK:
+		Logging.write(".pck import failed: " + error_string(err), Logging.MessageLevel.ERROR)
 		DirAccess.make_dir_absolute("res://modules")
 		return false
 	
@@ -170,15 +171,21 @@ func import_pcks() -> bool:
 	_recurse_for_pcks(paths, dir)
 	for pck in paths:
 		ProjectSettings.load_resource_pack(pck, false)
-		
+	
+	Logging.write("Files: " + str(dir.get_files()), Logging.MessageLevel.DEBUG)
+	Logging.write("Directories: " + str(dir.get_directories()), Logging.MessageLevel.DEBUG)
 	return true
 
 func import_modules():
 	var dir = DirAccess.open("res://modules")
 	var err = DirAccess.get_open_error()
-	if err == ERR_INVALID_PARAMETER:
+	if err != OK:
+		Logging.write("Module import failed: " + error_string(err), Logging.MessageLevel.ERROR)
 		DirAccess.make_dir_absolute("res://modules")
 		return false
+	
+	Logging.write("Files: " + str(dir.get_files()), Logging.MessageLevel.DEBUG)
+	Logging.write("Directories: " + str(dir.get_directories()), Logging.MessageLevel.DEBUG)
 	
 	var modules : Array[CPMOSCModule] = []
 	_recurse_for_modules(modules, dir)
