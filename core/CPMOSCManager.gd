@@ -63,7 +63,7 @@ func _ready():
 	_client.connect_socket(ip_address, sending)
 	_ip_address_entry.text = ip_address
 	_sending_port_entry.value = sending
-	
+
 	_server.port = receiving
 	_server.listen(receiving)
 	_receiving_port_entry.value = receiving
@@ -166,7 +166,13 @@ func _on_message_sent(address, arguments):
 	Logging.write(address + ": " + str(arguments), Logging.MessageLevel.OUTGOING)
 
 func load_packed_modules():
-	var dir = DirAccess.open("res://modules/")
+	var dir = DirAccess.open("res://modules")
+	var err = DirAccess.get_open_error()
+
+	if err == ERR_INVALID_PARAMETER:
+		DirAccess.make_dir_absolute("res://modules")
+		return
+		
 	dir.list_dir_begin()
 	var file = dir.get_next()
 	var module_name = file.rstrip(".pck").split("_")[0].split("-")[0]
