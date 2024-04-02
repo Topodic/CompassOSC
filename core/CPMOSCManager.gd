@@ -160,11 +160,12 @@ func _on_message_sent(address, arguments):
 	Logging.write(address + ": " + str(arguments), Logging.MessageLevel.OUTGOING)
 
 func import_pcks() -> bool:
-	var dir = DirAccess.open("res://modules")
+	var path = local_dir().path_join("modules")
+	var dir = DirAccess.open(path)
 	var err = DirAccess.get_open_error()
 	if err != OK:
 		Logging.write(".pck import failed: " + error_string(err), Logging.MessageLevel.ERROR)
-		DirAccess.make_dir_absolute("res://modules")
+		DirAccess.make_dir_absolute(path)
 		return false
 	
 	var paths = []
@@ -177,11 +178,12 @@ func import_pcks() -> bool:
 	return true
 
 func import_modules():
-	var dir = DirAccess.open("res://modules")
+	var path = "res://"
+	var dir = DirAccess.open(path)
 	var err = DirAccess.get_open_error()
 	if err != OK:
 		Logging.write("Module import failed: " + error_string(err), Logging.MessageLevel.ERROR)
-		DirAccess.make_dir_absolute("res://modules")
+		DirAccess.make_dir_absolute(path)
 		return false
 	
 	Logging.write("Files: " + str(dir.get_files()), Logging.MessageLevel.DEBUG)
@@ -215,6 +217,12 @@ func attach_module_controls(module : CPMOSCModule):
 		_controls_list.add_child(_container)
 		_container.attach_control(module.control)
 		module.control.show()
+
+func local_dir():
+	if OS.has_feature("build"):
+		return OS.get_executable_path().get_base_dir()
+	else:
+		return "res://"
 
 func add_loaded_modules_entry(module : CPMOSCModule):
 	var entry = _loaded_module_entry.instantiate()
