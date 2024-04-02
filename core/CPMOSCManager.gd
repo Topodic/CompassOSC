@@ -197,6 +197,7 @@ func import_modules():
 
 		if !module_exists:
 			add_child(module)
+			Logging.write(module.module_name + " (" + module.module_id + ")" + " loaded!", Logging.MessageLevel.INFO)
 			_loaded_modules.append(module)
 		else:
 			module.queue_free()
