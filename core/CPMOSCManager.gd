@@ -256,7 +256,7 @@ func _recurse_for_modules(modules : Array[CPMOSCModule], dir : DirAccess):
 		var is_remap = file.ends_with(".tscn.remap")
 		if !is_scene and !is_remap:
 			continue
-		var scene_path = dir.get_current_dir() + "/" + file.rstrip(".remap")
+		var scene_path = dir.get_current_dir() + "/" + file.trim_suffix(".remap")
 		var node = load(scene_path).instantiate()
 		if node is CPMOSCModule:
 			_module_filepaths.append(scene_path)
