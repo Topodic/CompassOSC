@@ -26,8 +26,9 @@ var config : ConfigFile = null
 var control : ModuleControlBase = null
 
 var _client : OSCClient = null
+var _manager : CPMOSCManager = null
 var _initialized : bool = false
-
+var _disabled : bool = false
 
 func _init():
 	add_to_group("modules")
@@ -36,6 +37,7 @@ func _init():
 
 func initialize(client : OSCClient, manager : CPMOSCManager):
 	_client = client
+	_manager = manager
 	manager.message_received.connect(on_message_received)
 	_initialized = true
 	for child in get_children():
@@ -69,6 +71,14 @@ func send_message(address, arguments):
 func on_message_received(address, arguments):
 	pass
 
+## Virtual method for handling module disabling, called when disabled via Loaded Modules.
+func on_disabled():
+	pass
+
+## Virtual method for handling module enabling, called when enabled via Loaded Modules.
+func on_enabled():
+	pass
+
 # A check for whether or not this module has any controls.
 func has_controls() -> bool:
 	return control != null
@@ -76,3 +86,24 @@ func has_controls() -> bool:
 func save_configs():
 	if config:
 		config.save("user://" + module_id + ".cfg")
+
+
+
+func set_enabled(enabled : bool = true):
+	if enabled:
+		set_process(true)
+		set_physics_process(true)
+		if !_manager.message_received.is_connected(on_message_received):
+			_manager.message_received.connect(on_message_received)
+		if control:
+			control.modulate.a = 1.0
+		_disabled = false
+	else:
+		set_process(false)
+		set_physics_process(false)
+		if _manager.message_received.is_connected(on_message_received):
+			_manager.message_received.disconnect(on_message_received)
+		if control:
+			control.modulate.a = 0.5
+		_disabled = true
+		

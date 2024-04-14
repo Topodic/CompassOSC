@@ -96,6 +96,35 @@ theme_override_constants/margin_bottom = 8
 [node name="VBoxContainer" type="VBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 
+[node name="HBoxContainer4" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "Sending:"
+
+[node name="SendingToggle" type="CheckButton" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+button_pressed = true
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer5"]
+layout_mode = 2
+text = "Receiving:"
+
+[node name="ReceivingToggle" type="CheckButton" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer5"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+button_pressed = true
+
+[node name="HSeparator" type="HSeparator" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="HBoxContainer" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 

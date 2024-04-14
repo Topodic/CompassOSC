@@ -33,6 +33,17 @@ bbcode_enabled = true
 text = "[b][i]Module Name[/i][/b] [i]v0[/i] [color=gray]by Author Name[/color]"
 fit_content = true
 
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Enabled: "
+
+[node name="EnabledCheck" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+button_pressed = true
+
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 

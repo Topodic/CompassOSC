@@ -15,6 +15,9 @@ var _module_filepaths : Array = []
 @onready var _controls_list = %ModuleControlList
 @onready var _loaded_modules_list = %LoadedModulesList
 
+@onready var _sending_toggle = %SendingToggle
+@onready var _receiving_toggle = %ReceivingToggle
+
 @onready var _ip_address_entry = %IPAddress
 @onready var _receiving_port_entry = %ReceivingPort
 @onready var _sending_port_entry = %SendingPort
@@ -42,6 +45,8 @@ func _ready():
 	
 	var err = _config.load("user://manager.cfg")
 	if !err == OK:
+		_config.set_value("Network", "Sending", true)
+		_config.set_value("Network", "Receiving", true)
 		_config.set_value("Network", "IPAddress", "127.0.0.1")
 		_config.set_value("Network", "ReceivingPort", 9001)
 		_config.set_value("Network", "SendingPort", 9000)
@@ -51,22 +56,28 @@ func _ready():
 		_config.set_value("Logging", "Error", true)
 		_config.set_value("Logging", "Incoming", false)
 		_config.set_value("Logging", "Outgoing", false)
-		_config.save("user://manager.cfg")
-		
+		save_config()
 	
 	# Set networking values.
+	var is_sending = _config.get_value("Network", "Sending", true)
+	var is_receiving = _config.get_value("Network", "Receiving", true)
+	
+	_sending_toggle.button_pressed = is_sending
+	_receiving_toggle.button_pressed = is_receiving
+	
 	var ip_address = _config.get_value("Network", "IPAddress")
 	var receiving = _config.get_value("Network", "ReceivingPort")
 	var sending = _config.get_value("Network", "SendingPort")
 	
 	_client.ip_address = ip_address
 	_client.port = sending
-	_client.connect_socket(ip_address, sending)
+	_client.sending = is_sending
+
 	_ip_address_entry.text = ip_address
 	_sending_port_entry.value = sending
 
 	_server.port = receiving
-	_server.listen(receiving)
+	_server.receiving = is_receiving
 	_receiving_port_entry.value = receiving
 	
 	# Set Logging options.
@@ -95,6 +106,8 @@ func _ready():
 	message_received.connect(_on_message_received)
 	_client.message_sent.connect(_on_message_sent)
 	
+	_sending_toggle.toggled.connect(_sending_toggled)
+	_receiving_toggle.toggled.connect(_receiving_toggled)
 	_ip_address_entry.text_submitted.connect(_ip_address_changed)
 	_receiving_port_entry.value_changed.connect(_receiving_port_changed)
 	_sending_port_entry.value_changed.connect(_sending_port_changed)
@@ -119,6 +132,18 @@ func _ready():
 		attach_module_controls(module)
 		add_loaded_modules_entry(module)
 
+		module.set_enabled(_config.get_value("Modules", module.module_id, true))
+
+
+func _sending_toggled(toggled : bool):
+	_client.sending = toggled
+	_config.set_value("Network", "Sending", toggled)
+	save_config()
+
+func _receiving_toggled(toggled : bool):
+	_server.receiving = toggled
+	_config.set_value("Network", "Receiving", toggled)
+	save_config()
 
 func _ip_address_changed(address : String):
 	_client.connect_socket(address, _client.port)
@@ -133,7 +158,7 @@ func _logging_toggle_changed(toggled : bool, level : Logging.MessageLevel):
 	Logging.set_level(level, toggled)
 	var key = Logging.level_to_string(level).capitalize()
 	_config.set_value("Logging", key, toggled)
-	_config.save("user://manager.cfg")
+	save_config()
 
 func _process(delta):
 	_process_time += delta
@@ -158,6 +183,9 @@ func _on_message_received(address, arguments):
 	
 func _on_message_sent(address, arguments):
 	Logging.write(address + ": " + str(arguments), Logging.MessageLevel.OUTGOING)
+
+func save_config():
+	_config.save("user://manager.cfg")
 
 func import_pcks() -> bool:
 	var path = local_dir().path_join("modules")
@@ -233,6 +261,8 @@ func add_loaded_modules_entry(module : CPMOSCModule):
 	entry.set_module_version(module.module_version)
 	entry.set_author_name(module.module_author)
 	entry.set_description(module.module_description)
+	entry.module_toggled.connect(_on_module_toggled.bind(module))
+	entry.module_enabled_check.button_pressed = _config.get_value("Modules", module.module_id, true)
 
 func _recurse_for_pcks(paths : Array, dir : DirAccess):
 	var dirs = dir.get_directories()
@@ -268,3 +298,7 @@ func _recurse_for_modules(modules : Array[CPMOSCModule], dir : DirAccess):
 		_recurse_for_modules(modules, dir)
 		dir.change_dir("..")
 
+func _on_module_toggled(toggled : bool, module : CPMOSCModule):
+	module.set_enabled(toggled)
+	_config.set_value("Modules", module.module_id, toggled)
+	save_config()

@@ -1,7 +1,13 @@
 extends PanelContainer
 
+signal module_toggled(toggled)
+
 @onready var module_name_label : RichTextLabel = get_node("MarginContainer/VBoxContainer/HBoxContainer/ModuleNameLabel")
 @onready var module_description_label : RichTextLabel = get_node("MarginContainer/VBoxContainer/ModuleDescription")
+@onready var module_enabled_check : CheckBox = get_node("MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/EnabledCheck")
+
+func _ready():
+	module_enabled_check.toggled.connect(func(toggled): module_toggled.emit(toggled))
 
 func set_git_repo(url : String):
 	module_name_label.text = module_name_label.text.replace("Module Name",
