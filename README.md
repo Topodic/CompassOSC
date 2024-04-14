@@ -1,5 +1,5 @@
 # CompassOSC
-Modular OSC software built primarily for the Customizable Player Models Minecraft mod. Made with Godot. (Usage with CPM requires the [CPM OSC Compat]() mod, enabled in the in-game editor via Edit > Tools > OSC Settings.)
+Modular OSC software built primarily for the Customizable Player Models Minecraft mod. Made with Godot. (Usage with CPM requires the [CPM OSC Compat](https://modrinth.com/mod/cpmoscc) mod, enabled in the in-game editor via Edit > Tools > OSC Settings.)
 
 ---
 # Basic Usage
