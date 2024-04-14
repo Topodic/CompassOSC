@@ -10,7 +10,7 @@ signal message_sent(address, arguments)
 ## The port to send to.
 @export var port = 4646
 var client = PacketPeerUDP.new()
-
+var sending : bool = true
 
 func _ready():
 	connect_socket(ip_address, port)
@@ -80,6 +80,8 @@ func prepare_message(osc_address : String, args : Array):
 	return packet
 
 func send_message(osc_address : String, args):
+	if !sending:
+		return
 	if !osc_address.begins_with("/"):
 		push_error("Malformed address: ", osc_address, "\n",
 		"Ensure it begins with /.")

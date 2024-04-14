@@ -18,6 +18,13 @@ var incoming_messages := {}
 #@export var parse_rate = 10 deprecated
 var server = UDPServer.new()
 var peers: Array[PacketPeerUDP] = []
+var receiving : bool = true:
+	set(val):
+		receiving = val
+		if receiving:
+			listen(port)
+		else:
+			server.stop()
 
 func _ready():
 	server.listen(port)
