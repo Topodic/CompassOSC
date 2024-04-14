@@ -147,12 +147,18 @@ func _receiving_toggled(toggled : bool):
 
 func _ip_address_changed(address : String):
 	_client.connect_socket(address, _client.port)
+	_config.set_value("Network", "IPAddress", address)
 
 func _receiving_port_changed(port : int):
 	_server.listen(port)
+	_config.set_value("Network", "ReceivingPort", port)
+	save_config()
+	
 
 func _sending_port_changed(port : int):
 	_client.connect_socket(_client.ip_address, port)
+	_config.set_value("Network", "SendingPort", port)
+	save_config()
 
 func _logging_toggle_changed(toggled : bool, level : Logging.MessageLevel):
 	Logging.set_level(level, toggled)
