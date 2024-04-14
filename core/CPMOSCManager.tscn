@@ -1,8 +1,47 @@
-[gd_scene load_steps=4 format=3 uid="uid://dq21ausqfl3wl"]
+[gd_scene load_steps=7 format=3 uid="uid://dq21ausqfl3wl"]
 
 [ext_resource type="Script" path="res://core/CPMOSCManager.gd" id="1_vax1h"]
 [ext_resource type="Script" path="res://addons/godOSC/scripts/OSCServer.gd" id="2_tt6q6"]
 [ext_resource type="Script" path="res://addons/godOSC/scripts/OSCClient.gd" id="3_okd4r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dr7b6"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_size = 1
+shadow_offset = Vector2(0, 1.5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2r3y0"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.215686, 0.215686, 0.215686, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_size = 1
+shadow_offset = Vector2(0, 1.5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ae4dv"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.247059, 0.247059, 0.247059, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_size = 1
+shadow_offset = Vector2(0, 1.5)
 
 [node name="CPMOSCManager" type="Node"]
 script = ExtResource("1_vax1h")
@@ -31,8 +70,10 @@ theme_override_constants/margin_bottom = 20
 
 [node name="TabContainer" type="TabContainer" parent="Interface/MarginContainer"]
 layout_mode = 2
+current_tab = 2
 
 [node name="Controls" type="MarginContainer" parent="Interface/MarginContainer/TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -65,7 +106,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Settings" type="MarginContainer" parent="Interface/MarginContainer/TabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
@@ -184,6 +224,51 @@ value = 9000.0
 rounded = true
 alignment = 2
 
+[node name="HSeparator" type="HSeparator" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Configs:"
+
+[node name="PanelContainer2" type="PanelContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="ImportButton" type="Button" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_dr7b6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2r3y0")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ae4dv")
+text = "Import"
+
+[node name="Control" type="Control" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(10.5, 0)
+layout_mode = 2
+
+[node name="ExportButton" type="Button" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer/VBoxContainer/PanelContainer2/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_dr7b6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2r3y0")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ae4dv")
+text = "Export
+"
+
 [node name="VSeparator" type="VSeparator" parent="Interface/MarginContainer/TabContainer/Settings/HBoxContainer"]
 layout_mode = 2
 
@@ -279,3 +364,21 @@ text = "Outgoing:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
+
+[node name="ImportDialog" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 1
+size = Vector2i(600, 400)
+max_size = Vector2i(600, 400)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.zip")
+use_native_dialog = true
+
+[node name="ExportDialog" type="FileDialog" parent="."]
+initial_position = 1
+size = Vector2i(972, 159)
+access = 2
+filters = PackedStringArray("*.zip")
+use_native_dialog = true

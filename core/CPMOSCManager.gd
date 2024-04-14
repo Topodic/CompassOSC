@@ -22,12 +22,18 @@ var _module_filepaths : Array = []
 @onready var _receiving_port_entry = %ReceivingPort
 @onready var _sending_port_entry = %SendingPort
 
+@onready var _import_button = %ImportButton
+@onready var _export_button = %ExportButton
+
 @onready var _info_toggle = %InfoToggle
 @onready var _debug_toggle = %DebugToggle
 @onready var _warning_toggle = %WarningToggle
 @onready var _error_toggle = %ErrorToggle
 @onready var _incoming_toggle = %IncomingToggle
 @onready var _outgoing_toggle = %OutgoingToggle
+
+@onready var _import_dialog = $ImportDialog
+@onready var _export_dialog = $ExportDialog
 
 var _control_container = preload("res://core/ModuleControlContainer.tscn")
 var _loaded_module_entry = preload("res://core/LoadedModuleEntry.tscn")
@@ -112,6 +118,12 @@ func _ready():
 	_receiving_port_entry.value_changed.connect(_receiving_port_changed)
 	_sending_port_entry.value_changed.connect(_sending_port_changed)
 	
+	_import_button.pressed.connect(_import_dialog.popup)
+	_export_button.pressed.connect(_export_dialog.popup)
+	
+	_import_dialog.file_selected.connect(_on_import_file_selected)
+	_export_dialog.file_selected.connect(_on_export_file_selected)
+	
 	_info_toggle.toggled.connect(_logging_toggle_changed.bind(Logging.MessageLevel.INFO))
 	_debug_toggle.toggled.connect(_logging_toggle_changed.bind(Logging.MessageLevel.DEBUG))
 	_warning_toggle.toggled.connect(_logging_toggle_changed.bind(Logging.MessageLevel.WARNING))
@@ -119,20 +131,7 @@ func _ready():
 	_incoming_toggle.toggled.connect(_logging_toggle_changed.bind(Logging.MessageLevel.INCOMING))
 	_outgoing_toggle.toggled.connect(_logging_toggle_changed.bind(Logging.MessageLevel.OUTGOING))
 	
-	# Workaround for a quirk with DirAccess and loading resource packs
-	# in Godot itself, see https://github.com/godotengine/godot/issues/87274
-	import_modules()
-	if import_pcks():
-		import_modules()
-
-	for module in _loaded_modules:
-		assert(module is CPMOSCModule, "Invalid node found in module list: " + str(module))
-		module.initialize(_client, self)
-		
-		attach_module_controls(module)
-		add_loaded_modules_entry(module)
-
-		module.set_enabled(_config.get_value("Modules", module.module_id, true))
+	load_modules()
 
 
 func _sending_toggled(toggled : bool):
@@ -153,12 +152,56 @@ func _receiving_port_changed(port : int):
 	_server.listen(port)
 	_config.set_value("Network", "ReceivingPort", port)
 	save_config()
-	
 
 func _sending_port_changed(port : int):
 	_client.connect_socket(_client.ip_address, port)
 	_config.set_value("Network", "SendingPort", port)
 	save_config()
+
+func _on_import_file_selected(path : String):
+	Logging.write("Importing configs from file: " + path)
+	var zip = ZIPReader.new()
+	var err = zip.open(path)
+	if err != OK:
+		Logging.write("Error while importing: " + error_string(err), Logging.MessageLevel.ERROR)
+		return
+
+	var files = zip.get_files()
+	for file in files:
+		if !file.ends_with(".cfg"):
+			continue
+		var bytes = zip.read_file(file)
+		var outpath = "user://" + file
+		#if FileAccess.file_exists(outpath):
+			#DirAccess.remove_absolute(outpath)
+		
+		var out : FileAccess = FileAccess.open(outpath, FileAccess.WRITE)
+		if out == null:
+			Logging.write("Error writing to file: " + file + " with error " + error_string(out.get_open_error()), Logging.MessageLevel.ERROR)
+			continue
+		out.store_buffer(bytes)
+		out.close()
+	
+	reload_modules()
+
+func _on_export_file_selected(path : String):
+	Logging.write("Exporting configs to file: " + path)
+	var zip = ZIPPacker.new()
+	var err = zip.open(path)
+	if err != OK:
+		Logging.write("Error while exporting: " + error_string(err), Logging.MessageLevel.ERROR)
+		return
+
+	var user_dir = DirAccess.open("user://")
+	var files = user_dir.get_files()
+	for file in files:
+		if !file.ends_with(".cfg"):
+			continue
+		var bytes = FileAccess.get_file_as_bytes("user://" + file)
+		zip.start_file(file)
+		zip.write_file(bytes)
+		zip.close_file()
+	zip.close()
 
 func _logging_toggle_changed(toggled : bool, level : Logging.MessageLevel):
 	Logging.set_level(level, toggled)
@@ -244,6 +287,35 @@ func import_modules():
 			_loaded_modules.append(module)
 		else:
 			module.queue_free()
+
+func unload_modules():
+	for module in _loaded_modules:
+		module.queue_free()
+	_loaded_modules.clear()
+	for entry in _loaded_modules_list.get_children():
+		entry.queue_free()
+	for control in _controls_list.get_children():
+		control.queue_free()
+
+func load_modules():
+	# Workaround for a quirk with DirAccess and loading resource packs
+	# in Godot itself, see https://github.com/godotengine/godot/issues/87274
+	import_modules()
+	if import_pcks():
+		import_modules()
+
+	for module in _loaded_modules:
+		assert(module is CPMOSCModule, "Invalid node found in module list: " + str(module))
+		module.initialize(_client, self)
+		
+		attach_module_controls(module)
+		add_loaded_modules_entry(module)
+
+		module.set_enabled(_config.get_value("Modules", module.module_id, true))
+
+func reload_modules():
+	unload_modules()
+	load_modules()
 
 func attach_module_controls(module : CPMOSCModule):
 	if module.has_controls():
