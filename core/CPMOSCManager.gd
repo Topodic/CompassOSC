@@ -147,6 +147,7 @@ func _receiving_toggled(toggled : bool):
 func _ip_address_changed(address : String):
 	_client.connect_socket(address, _client.port)
 	_config.set_value("Network", "IPAddress", address)
+	save_config()
 
 func _receiving_port_changed(port : int):
 	_server.listen(port)
