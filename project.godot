@@ -12,7 +12,7 @@ config_version=5
 
 config/name="CompassOSC"
 config/description="Modular OSC software for Customizable Player Models."
-config/version="0.1.3.0"
+config/version="0.1.3.1"
 run/main_scene="res://core/CPMOSCManager.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/show_image=false
@@ -33,3 +33,7 @@ window/size/viewport_height=600
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/godOSC/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
