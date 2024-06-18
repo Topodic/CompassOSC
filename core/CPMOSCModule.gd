@@ -97,8 +97,10 @@ func set_enabled(enabled : bool = true):
 			_manager.message_received.connect(on_message_received)
 		if control:
 			control.modulate.a = 1.0
+		on_enabled()
 		_disabled = false
 	else:
+		on_disabled()
 		set_process(false)
 		set_physics_process(false)
 		if _manager.message_received.is_connected(on_message_received):
