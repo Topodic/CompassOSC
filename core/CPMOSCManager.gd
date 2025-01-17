@@ -21,6 +21,7 @@ var _module_filepaths : Array = []
 @onready var _ip_address_entry = %IPAddress
 @onready var _receiving_port_entry = %ReceivingPort
 @onready var _sending_port_entry = %SendingPort
+@onready var _test_message_button = %TestButton
 
 @onready var _import_button = %ImportButton
 @onready var _export_button = %ExportButton
@@ -117,6 +118,7 @@ func _ready():
 	_ip_address_entry.text_submitted.connect(_ip_address_changed)
 	_receiving_port_entry.value_changed.connect(_receiving_port_changed)
 	_sending_port_entry.value_changed.connect(_sending_port_changed)
+	_test_message_button.pressed.connect(func(): _client.send_message("/", "Compass is connected!"))
 	
 	_import_button.pressed.connect(_import_dialog.popup)
 	_export_button.pressed.connect(_export_dialog.popup)
